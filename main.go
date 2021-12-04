@@ -55,7 +55,7 @@
 package main
 
 import (
-	"github.com/dirkarnez/rpp/rpp"
+	"github.com/dirkarnez/dmake/rpp"
 )
 
 func main() {
