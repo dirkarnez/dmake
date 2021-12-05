@@ -8,4 +8,6 @@
 	<FXList>
 		<MainVocalReverb/>
 	</FXList>
+	<Send>
+	</Send>
 </Track>

@@ -125,7 +125,7 @@ func main() {
 	// 	ctx.Exit(0)
 	// }
 	ast := &File{}
-	r, err := os.Open("sample.dmake")
+	r, err := os.Open("samples/band.dmake")
 	ctx.FatalIfErrorf(err)
 	defer r.Close()
 	err = parser.Parse("", r, ast)
