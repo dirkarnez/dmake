@@ -52,13 +52,86 @@
 // 	}
 
 // }
+
 package main
 
 import (
-	"github.com/dirkarnez/dmake/rpp"
+	"os"
+
+	"github.com/alecthomas/kong"
+	"github.com/alecthomas/repr"
+	"github.com/dirkarnez/dmake/generator/rpp"
+
+	"github.com/alecthomas/participle/v2"
+	"github.com/alecthomas/participle/v2/lexer"
 )
 
+type File struct {
+	Elements []*Element `@@*`
+}
+
+type Element struct {
+	ElementHavingChildren   *ElementHavingChildren   `  @@`
+	ElementHavingNoChildren *ElementHavingNoChildren `| @@`
+}
+
+type ElementHavingNoChildren struct {
+	Name       string       `"<" @Ident`
+	Attributes []*Attribute `@@* "/" ">"`
+}
+
+type ElementHavingChildren struct {
+	Name       string       `"<" @Ident`
+	Attributes []*Attribute `@@* ">"`
+	Children   []*Element   `@@*`
+	NameEnd    string       `"<" "/" @Ident ">"`
+}
+
+type Attribute struct {
+	Key   string `@Ident"="`
+	Value *Value `@@`
+}
+
+type Value struct {
+	String *string  `  @String`
+	Number *float64 `| @Float`
+}
+
+var (
+	graphQLLexer = lexer.Must(lexer.NewSimple([]lexer.Rule{
+		{Name: "Ident", Pattern: `[a-zA-Z]+`, Action: nil},
+		{Name: "String", Pattern: `"(?:\\.|[^"])*"`, Action: nil},
+		{Name: "Float", Pattern: `[-+]?\d+(?:\.\d+)?`, Action: nil},
+		{Name: "Punct", Pattern: `[-,()*/+%{};&!=:<>]|\[|\]`, Action: nil},
+		{Name: "Whitespace", Pattern: `[ \t\n\r]+`, Action: nil},
+	}))
+	parser = participle.MustBuild(&File{},
+		participle.Lexer(graphQLLexer),
+		participle.Elide("Whitespace"),
+		participle.Unquote("String"),
+		participle.UseLookahead(50),
+	)
+)
+
+var cli struct {
+	EBNF  bool     `help"Dump EBNF."`
+	Files []string `arg:"" optional:"" type:"existingfile" help:"GraphQL schema files to parse."`
+}
+
 func main() {
+	ctx := kong.Parse(&cli)
+	// if cli.EBNF {
+	// 	fmt.Println(parser.String())
+	// 	ctx.Exit(0)
+	// }
+	ast := &File{}
+	r, err := os.Open("sample.dmake")
+	ctx.FatalIfErrorf(err)
+	defer r.Close()
+	err = parser.Parse("", r, ast)
+	ctx.FatalIfErrorf(err)
+	repr.Println(ast)
+
 	track1 := rpp.NewTrack()
 	track1.FreeMode = false
 
