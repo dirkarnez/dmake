@@ -1,0 +1,11 @@
+<FX name="Reverb" use="FabFilter Pro-Q3" installation="./q3.dll" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"/>
+
+<FXList name="MainVocalReverb">
+	<Reverb mix="90%"/>
+</FXList>
+
+<Track name="MainVocal">
+	<FXList>
+		<MainVocalReverb/>
+	</FXList>
+</Track>
