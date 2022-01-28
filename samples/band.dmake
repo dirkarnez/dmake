@@ -1,13 +1,21 @@
-<FX name="Reverb" use="FabFilter Pro-Q3" installation="./q3.dll" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"/>
-
-<FXList name="MainVocalReverb">
-	<Reverb mix="90%"/>
-</FXList>
-
-<Track name="MainVocal">
-	<FXList>
-		<MainVocalReverb/>
+<Project>
+	<script>
+		function SideChain() {
+			// blablabla
+		}
+	</script>
+	
+	<Vst name="FabFilter Pro-Q3" installation="./q3.dll" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"/>
+	<Vst name="Valhalla Room" installation="./valhalla room.dll" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"/>
+	
+	<FXList name="MainVocalReverb">
+		<FX useVst="FabFilter Pro-Q3" mix="90%"/>
+		<FX useVst="Valhalla Room" mix="90%"/>
 	</FXList>
-	<Send>
-	</Send>
-</Track>
+	
+	<Track name="MainVocal">
+		<FXList useName="MainVocalReverb">
+		<Send>
+		</Send>
+	</Track>
+</Project>
