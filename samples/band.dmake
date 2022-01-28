@@ -1,5 +1,10 @@
 <Project>
 	<script>
+		import EQCurves from "./eq-curves.dmake";
+		
+		
+		var myEQ = EQCurves["AM Radio"];
+		
 		function SideChain() {
 			// blablabla
 		}
