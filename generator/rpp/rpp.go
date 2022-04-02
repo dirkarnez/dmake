@@ -10,7 +10,6 @@ import (
 
 type IElement interface {
 	writeString(ownProperty string) string
-	getOwnProperty() string
 }
 
 type element struct {
@@ -33,7 +32,7 @@ func (e *element) writeString(ownProperty string) string {
 	numOfTabs++
 	str = str + getTabs() + ownProperty + "\n"
 	for _, child := range e.children {
-		str = str + child.writeString(child.getOwnProperty())
+		str = str + child.writeString(__getOwnProperty(child))
 	}
 	numOfTabs--
 	str = str + getTabs() + ">" + "\n"
@@ -79,12 +78,7 @@ func NewProject() *project {
 	return &p
 }
 
-func (p *project) getOwnProperty() string {
-	return __getOwnProperty(p)
-}
-
 func (p *project) AddTrack(track *track) {
-	fmt.Println(track.getOwnProperty())
 	p.children = append(p.children, track)
 }
 
@@ -96,7 +90,7 @@ func (p *project) WriteFile(fileName string) error {
 	defer file.Close()
 
 	newWriter := bufio.NewWriter(file)
-	fmt.Fprint(newWriter, p.writeString(p.getOwnProperty()))
+	fmt.Fprint(newWriter, p.writeString(__getOwnProperty(p)))
 	newWriter.Flush()
 	return nil
 }
@@ -113,10 +107,6 @@ func NewTrack() *track {
 	t := track{}
 	t.tagName = "TRACK"
 	return &t
-}
-
-func (t *track) getOwnProperty() string {
-	return __getOwnProperty(t)
 }
 
 func __getOwnProperty(obj interface{}) string {
